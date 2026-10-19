@@ -67,10 +67,6 @@ These choices should be reviewed because zero tenure may represent a valid new c
 Binary variables are mapped to numeric values:
 
 - `Churn`: Yes = 1, No = 0
-- `Partner`: Yes = 1, No = 0
-- `Dependents`: Yes = 1, No = 0
-- `PhoneService`: Yes = 1, No = 0
-- `gender`: Male = 1, Female = 0
 
 Other categorical features are encoded using One-Hot Encoding.
 
@@ -187,11 +183,11 @@ The following table should be completed using the actual output from the final m
 
 | Metric | Final Result |
 |---|---:|
-| Accuracy | To be measured |
-| Precision | To be measured |
-| Recall | To be measured |
-| F1-score | To be measured |
-| ROC-AUC | To be measured |
+| Accuracy  | 79%   |
+| Precision | 60%   |
+| Recall    | 59.3% |
+| F1-score  | 60%   |
+| ROC-AUC   | 84%   |
 | Classification Threshold | 0.70 |
 
 The results must be generated from the final saved model and the matching preprocessing workflow before publication.
