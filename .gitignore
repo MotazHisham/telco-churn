@@ -63,7 +63,7 @@ data/processed/*
 # Generated model files
 # =========================
 models/*.pkl
-models/*.joblib
+#models/*.joblib
 models/*.h5
 models/*.pt
 models/*.pth
