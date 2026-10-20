@@ -5,6 +5,11 @@ import pandas as pd
 ROOT_DIR = Path(__file__).resolve().parent.parent
 MODEL_PATH = ROOT_DIR / "models" / "churn_model.joblib"
 
+saved_artifact = joblib.load(MODEL_PATH)
+
+model_pipeline = saved_artifact["model"]
+threshold = saved_artifact["threshold"]
+
 
 def predict_customer(customer_data):
 
@@ -12,18 +17,17 @@ def predict_customer(customer_data):
     customer_df = pd.DataFrame([customer_data])
 
     # Load the saved pipeline
-    model = joblib.load(MODEL_PATH)
+    saved_artifact = joblib.load(MODEL_PATH)
+    model_pipeline = saved_artifact["model"]
+    threshold = saved_artifact["threshold"]
 
     # Predict churn probability using the loaded model
-    probability = model.predict_proba(customer_df)[:, 1]
-
-    # Use the same threshold
-    threshold = 0.7
+    probability = model_pipeline.predict_proba(customer_df)[:, 1]
 
     # Convert probability to prediction
-    prediction = (probability >= threshold).astype(int)
+    offer = (probability >= threshold).astype(int)
 
-    result = "Churn" if prediction == 1 else "No Churn"
+    result = "Churn" if offer == 1 else "No Churn"
 
     print("Prediction:", result)
 

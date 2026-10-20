@@ -54,7 +54,7 @@ def train_model():
     y_prob = model_pipeline.predict_proba(X_test)[:, 1]
 
     # Choose a threshold
-    threshold = 0.7
+    threshold = 0.12
 
     # Convert probabilities to predictions
     y_pred_threshold = (y_prob >= threshold).astype(int)
@@ -67,7 +67,14 @@ def train_model():
 
     # 8. Save the complete pipeline
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
-    joblib.dump(model_pipeline, MODEL_PATH)
+
+    joblib.dump(
+        {
+            "model": model_pipeline,
+            "threshold": 0.12
+        },
+        MODEL_PATH
+    )
 
     print(f"\nModel saved to: {MODEL_PATH}")
 
