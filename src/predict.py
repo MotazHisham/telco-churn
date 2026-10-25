@@ -31,7 +31,7 @@ def predict_customer(customer_data):
     probability = model_pipeline.predict_proba(customer_df)[:, 1]
 
     # Apply decision threshold
-    offer = int(probability >= threshold)
+    offer = (probability >= threshold).astype(int)
 
     result = "Churn" if offer == 1 else "No Churn"
 
@@ -86,26 +86,26 @@ def rank_customers(customers_df):
 
 if __name__ == "__main__":
 
-    customer = {
-        "gender": "Male",
-        "SeniorCitizen": 0,
-        "Partner": "Yes",
-        "Dependents": "No",
-        "tenure": 5,
-        "PhoneService": "Yes",
-        "MultipleLines": "No",
-        "InternetService": "Fiber optic",
-        "OnlineSecurity": "No",
-        "OnlineBackup": "No",
-        "DeviceProtection": "No",
-        "TechSupport": "No",
-        "StreamingTV": "No",
-        "StreamingMovies": "No",
-        "Contract": "Month-to-month",
-        "PaperlessBilling": "Yes",
-        "PaymentMethod": "Electronic check",
-        "MonthlyCharges": 85.0,
-        "TotalCharges": 425.0
-    }
+    # 1. Load new customers from CSV
+    input_path = ROOT_DIR / "data" / "new_customers.csv"
+    customers_df = pd.read_csv(input_path)
 
-    predict_customer(customer)
+    # 2. Remove target column if it exists
+    customers_df = customers_df.drop(
+        columns=["Churn", "customerID"],
+        errors="ignore"
+    )
+
+    # 3. Rank customers
+    results = rank_customers(customers_df)
+
+    # 4. Save results
+    output_path = ROOT_DIR / "data" / "customer_risk_results.csv"
+    results.to_csv(output_path, index=False)
+
+    # 5. Display important columns
+    print(results[
+        ["churn_probability", "predicted_churn", "risk_group"]
+    ])
+
+    print(f"\nResults saved to: {output_path}")
