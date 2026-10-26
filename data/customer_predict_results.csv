@@ -1,0 +1,13 @@
+gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Prediction,Churn Probability
+Male,0,Yes,No,5,Yes,No,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,Electronic check,85.0,425.0,Churn,0.82
+Female,0,No,No,24,Yes,Yes,DSL,Yes,Yes,No,Yes,No,No,One year,No,Mailed check,60.0,1440.0,No Churn,0.12
+Male,1,Yes,No,2,Yes,No,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,95.0,190.0,Churn,0.91
+Female,0,Yes,Yes,60,Yes,Yes,DSL,Yes,Yes,Yes,Yes,Yes,Yes,Two year,No,Bank transfer (automatic),78.5,4710.0,No Churn,0.03
+Male,0,No,No,12,Yes,No,Fiber optic,No,Yes,No,No,No,Yes,Month-to-month,Yes,Credit card (automatic),72.3,867.6,Churn,0.8
+Female,1,No,No,36,Yes,Yes,Fiber optic,Yes,No,Yes,No,Yes,No,One year,Yes,Electronic check,89.9,3236.4,Churn,0.56
+Male,0,Yes,Yes,72,Yes,Yes,DSL,Yes,Yes,Yes,Yes,No,No,Two year,No,Bank transfer (automatic),55.2,3974.4,No Churn,0.01
+Female,0,No,No,3,Yes,No,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,99.0,297.0,Churn,0.89
+Male,0,No,Yes,18,Yes,Yes,DSL,No,Yes,Yes,Yes,No,No,One year,No,Credit card (automatic),64.8,1166.4,Churn,0.12
+Female,0,Yes,No,48,Yes,No,Fiber optic,Yes,Yes,Yes,Yes,Yes,Yes,Two year,Yes,Bank transfer (automatic),88.0,4224.0,Churn,0.18
+Male,1,No,No,8,Yes,No,Fiber optic,No,Yes,No,No,No,No,Month-to-month,Yes,Electronic check,92.1,736.8,Churn,0.77
+Female,0,Yes,Yes,30,Yes,Yes,DSL,Yes,No,Yes,Yes,Yes,No,One year,No,Mailed check,69.4,2082.0,No Churn,0.1

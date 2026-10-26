@@ -2,6 +2,8 @@ import math
 from pathlib import Path
 import joblib
 import pandas as pd
+import numpy as np
+
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 MODEL_PATH = ROOT_DIR / "models" / "churn_model.joblib"
@@ -24,23 +26,29 @@ def predict_customer(customer_data):
     # Load the saved model
     model_pipeline, threshold = load_model()
 
-    # Convert one customer to a DataFrame
-    customer_df = pd.DataFrame([customer_data])
+    # Convert input into a DataFrame
+    if isinstance(customer_data, dict):
+        results_df = pd.DataFrame([customer_data])
+    else:
+        results_df = customer_data.copy()
 
     # Predict churn probability
-    probability = model_pipeline.predict_proba(customer_df)[:, 1]
+    probability = model_pipeline.predict_proba(results_df)[:, 1]
 
     # Apply decision threshold
     offer = (probability >= threshold).astype(int)
-
-    result = "Churn" if offer == 1 else "No Churn"
+    result = np.where(offer == 1, "Churn", "No Churn")
 
     print("Prediction:", result)
+    print("probability:", probability.round(2))
 
-    for prob in probability:
-        print((prob * 100).round(2), "%")
+    # for prob in probability:
+    # print((prob * 100).round(2), "%")
 
-    return result, probability
+    results_df["Prediction"] = result
+    results_df["Churn Probability"] = probability.round(2)
+
+    return results_df
 
 
 def rank_customers(customers_df):
@@ -96,12 +104,18 @@ if __name__ == "__main__":
         errors="ignore"
     )
 
+    # Predict churn for each customer
+    result_predict = predict_customer(customers_df)
+
     # 3. Rank customers
     results = rank_customers(customers_df)
 
     # 4. Save results
     output_path = ROOT_DIR / "data" / "customer_risk_results.csv"
     results.to_csv(output_path, index=False)
+
+    output_path_predict = ROOT_DIR / "data" / "customer_predict_results.csv"
+    result_predict.to_csv(output_path_predict, index=False)
 
     # 5. Display important columns
     print(results[

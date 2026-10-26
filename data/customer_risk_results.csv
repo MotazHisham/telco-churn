@@ -1,0 +1,13 @@
+gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,churn_probability,predicted_churn,risk_group
+Male,1,Yes,No,2,Yes,No,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,95.0,190.0,0.9144530065436557,1,Top 10%
+Female,0,No,No,3,Yes,No,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,99.0,297.0,0.8919118428131215,1,Top 10%
+Male,0,Yes,No,5,Yes,No,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,Electronic check,85.0,425.0,0.8178269251622511,1,Top 20%
+Male,0,No,No,12,Yes,No,Fiber optic,No,Yes,No,No,No,Yes,Month-to-month,Yes,Credit card (automatic),72.3,867.6,0.8044995168542537,1,Other
+Male,1,No,No,8,Yes,No,Fiber optic,No,Yes,No,No,No,No,Month-to-month,Yes,Electronic check,92.1,736.8,0.7715924801393348,1,Other
+Female,1,No,No,36,Yes,Yes,Fiber optic,Yes,No,Yes,No,Yes,No,One year,Yes,Electronic check,89.9,3236.4,0.5590420618929741,1,Other
+Female,0,Yes,No,48,Yes,No,Fiber optic,Yes,Yes,Yes,Yes,Yes,Yes,Two year,Yes,Bank transfer (automatic),88.0,4224.0,0.17611179336089308,1,Other
+Male,0,No,Yes,18,Yes,Yes,DSL,No,Yes,Yes,Yes,No,No,One year,No,Credit card (automatic),64.8,1166.4,0.12210790061476653,1,Other
+Female,0,No,No,24,Yes,Yes,DSL,Yes,Yes,No,Yes,No,No,One year,No,Mailed check,60.0,1440.0,0.11892877486102663,0,Other
+Female,0,Yes,Yes,30,Yes,Yes,DSL,Yes,No,Yes,Yes,Yes,No,One year,No,Mailed check,69.4,2082.0,0.1025974411074191,0,Other
+Female,0,Yes,Yes,60,Yes,Yes,DSL,Yes,Yes,Yes,Yes,Yes,Yes,Two year,No,Bank transfer (automatic),78.5,4710.0,0.0278489524852878,0,Other
+Male,0,Yes,Yes,72,Yes,Yes,DSL,Yes,Yes,Yes,Yes,No,No,Two year,No,Bank transfer (automatic),55.2,3974.4,0.008143898836624072,0,Other

@@ -3,6 +3,7 @@ name = "customer-churn-project"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
+    "fastapi>=0.162.0",
     "imbalanced-learn>=0.14.2",
     "joblib>=1.6.0",
     "matplotlib>=3.11.2",
@@ -12,5 +13,6 @@ dependencies = [
     "seaborn>=0.13.2",
     "shap>=0.54.1",
     "streamlit>=1.66.1",
+    "uvicorn>=0.54.0",
     "xgboost>=3.4.1",
 ]
