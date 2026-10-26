@@ -42,9 +42,6 @@ def predict_customer(customer_data):
     print("Prediction:", result)
     print("probability:", probability.round(2))
 
-    # for prob in probability:
-    # print((prob * 100).round(2), "%")
-
     results_df["Prediction"] = result
     results_df["Churn Probability"] = probability.round(2)
 
