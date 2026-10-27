@@ -2,7 +2,14 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
-from src.predict import predict_customer, rank_customers
+import requests
+
+from src.predict import load_model, rank_customers
+
+
+# FastAPI endpoint
+API_URL = "http://127.0.0.1:8000/predict"
+
 
 st.set_page_config(
     page_title="Customer Churn Prediction",
@@ -15,31 +22,51 @@ st.write("Predict the probability of customer churn.")
 
 st.subheader("Customer Information")
 
+
 with st.form("customer_form"):
 
     col1, col2 = st.columns(2)
 
     with col1:
-        gender = st.selectbox("Gender", ["Male", "Female"])
-        senior = st.selectbox("Senior Citizen", [0, 1])
-        partner = st.selectbox("Partner", ["Yes", "No"])
-        dependents = st.selectbox("Dependents", ["Yes", "No"])
+        gender = st.selectbox(
+            "Gender", ["Male", "Female"]
+        )
+
+        senior = st.selectbox(
+            "Senior Citizen", [0, 1]
+        )
+
+        partner = st.selectbox(
+            "Partner", ["Yes", "No"]
+        )
+
+        dependents = st.selectbox(
+            "Dependents", ["Yes", "No"]
+        )
+
         tenure = st.number_input(
             "Tenure (months)", 0, 72, 12
         )
-        phone = st.selectbox("Phone Service", ["Yes", "No"])
+
+        phone = st.selectbox(
+            "Phone Service", ["Yes", "No"]
+        )
+
         multiple_lines = st.selectbox(
             "Multiple Lines",
             ["Yes", "No", "No phone service"]
         )
+
         internet = st.selectbox(
             "Internet Service",
             ["DSL", "Fiber optic", "No"]
         )
+
         contract = st.selectbox(
             "Contract",
             ["Month-to-month", "One year", "Two year"]
         )
+
         payment = st.selectbox(
             "Payment Method",
             [
@@ -55,37 +82,56 @@ with st.form("customer_form"):
             "Online Security",
             ["Yes", "No", "No internet service"]
         )
+
         online_backup = st.selectbox(
             "Online Backup",
             ["Yes", "No", "No internet service"]
         )
+
         device_protection = st.selectbox(
             "Device Protection",
             ["Yes", "No", "No internet service"]
         )
+
         tech_support = st.selectbox(
             "Tech Support",
             ["Yes", "No", "No internet service"]
         )
+
         streaming_tv = st.selectbox(
             "Streaming TV",
             ["Yes", "No", "No internet service"]
         )
+
         streaming_movies = st.selectbox(
             "Streaming Movies",
             ["Yes", "No", "No internet service"]
         )
+
         paperless = st.selectbox(
             "Paperless Billing", ["Yes", "No"]
         )
+
         monthly_charges = st.number_input(
-            "Monthly Charges", min_value=0.0, value=70.0
-        )
-        total_charges = st.number_input(
-            "Total Charges", min_value=0.0, value=840.0
+            "Monthly Charges",
+            min_value=0.0,
+            value=70.0
         )
 
-    submitted = st.form_submit_button("Predict Churn")
+        total_charges = st.number_input(
+            "Total Charges",
+            min_value=0.0,
+            value=840.0
+        )
+
+    submitted = st.form_submit_button(
+        "Predict Churn"
+    )
+
+
+# =====================================
+# Single Customer Prediction via FastAPI
+# =====================================
 
 if submitted:
 
@@ -112,31 +158,60 @@ if submitted:
     }
 
     try:
-        result, probability = predict_customer(customer)
+        # Send customer data to FastAPI
+        response = requests.post(
+            API_URL,
+            json=[customer],
+            timeout=30
+        )
 
-        from src.predict import load_model
+        # Raise an error if the API returns HTTP 4xx or 5xx
+        response.raise_for_status()
 
+        # Convert the JSON response into a Python dictionary
+        api_result = response.json()
+
+        # If the API returns a list, get the first customer result
+        if isinstance(api_result, list):
+            api_result = api_result[0]
+
+        result = api_result["Prediction"]
+
+        churn_probability = float(
+            api_result["Churn Probability"]
+        )
+
+        # Load the local model for feature explanations only
         model_pipeline, threshold = load_model()
 
-        # Get the preprocessor and Logistic Regression model
-        preprocessor = model_pipeline.named_steps["preprocessor"]
-        classifier = model_pipeline.named_steps["model"]
+        preprocessor = model_pipeline.named_steps[
+            "preprocessor"
+        ]
 
-        # Transform this customer using the fitted preprocessor
+        classifier = model_pipeline.named_steps[
+            "model"
+        ]
+
         customer_df = pd.DataFrame([customer])
-        X_transformed = preprocessor.transform(customer_df)
+
+        X_transformed = preprocessor.transform(
+            customer_df
+        )
 
         if hasattr(X_transformed, "toarray"):
             X_transformed = X_transformed.toarray()
 
-        # Get feature names and model coefficients
-        feature_names = preprocessor.get_feature_names_out()
+        feature_names = (
+            preprocessor.get_feature_names_out()
+        )
+
         coefficients = classifier.coef_[0]
 
-        # Calculate each feature's contribution to the model score
-        contributions = X_transformed[0] * coefficients
+        contributions = (
+            X_transformed[0] * coefficients
+        )
 
-        # Keep the three strongest non-zero contributions
+        # Find the three strongest feature contributions
         nonzero_indices = np.flatnonzero(
             np.abs(contributions) > 1e-8
         )
@@ -147,10 +222,26 @@ if submitted:
             reverse=True
         )[:3]
 
-        # Display the strongest contributing features
         st.subheader("Top 3 Model Factors")
 
+        feature_labels = {
+            "num__tenure": "Customer tenure",
+            "num__MonthlyCharges": "Monthly charges",
+            "num__TotalCharges": "Total charges",
+            "num__SeniorCitizen": "Senior citizen status",
+            "cat__Contract_Month-to-month": "Monthly contract",
+            "cat__Contract_One year": "One-year contract",
+            "cat__Contract_Two year": "Two-year contract",
+            "cat__InternetService_DSL": "DSL internet service",
+            "cat__InternetService_Fiber optic": "Fiber optic internet",
+            "cat__InternetService_No": "No internet service",
+            "cat__TechSupport_No": "No tech support",
+            "cat__TechSupport_Yes": "Has tech support",
+            "cat__PaymentMethod_Electronic check": "Electronic check payment",
+        }
+
         for i in top_indices:
+
             feature = feature_names[i]
             contribution = contributions[i]
 
@@ -160,33 +251,19 @@ if submitted:
                 else "Pushes away from churn"
             )
 
-            feature_labels = {
-                "num__tenure": "Customer tenure",
-                "num__MonthlyCharges": "Monthly charges",
-                "num__TotalCharges": "Total charges",
-                "num__SeniorCitizen": "Senior citizen status",
-                "cat__Contract_Month-to-month": "Monthly contract",
-                "cat__Contract_One year": "One-year contract",
-                "cat__Contract_Two year": "Two-year contract",
-                "cat__InternetService_DSL": "DSL internet service",
-                "cat__InternetService_Fiber optic": "Fiber optic internet",
-                "cat__InternetService_No": "No internet service",
-                "cat__TechSupport_No": "No tech support",
-                "cat__TechSupport_Yes": "Has tech support",
-                "cat__PaymentMethod_Electronic check": "Electronic check payment",
-            }
-
             readable_name = feature_labels.get(
                 feature,
-                feature.replace("num__", "").replace(
-                    "cat__", "").replace("_", " ")
+                feature.replace(
+                    "num__", ""
+                ).replace(
+                    "cat__", ""
+                ).replace("_", " ")
             )
 
             st.write(f"**{readable_name}**")
             st.caption(direction)
 
-        churn_probability = float(probability[0])
-
+        # Display prediction results
         st.subheader("Prediction Results")
 
         st.metric(
@@ -195,17 +272,51 @@ if submitted:
         )
 
         if result == "Churn":
-            st.warning("The customer is flagged for retention.")
+            st.warning(
+                "The customer is flagged for retention."
+            )
         else:
-            st.success("The customer is not flagged for retention.")
+            st.success(
+                "The customer is not flagged for retention."
+            )
 
-        st.progress(churn_probability)
+        st.progress(
+            min(max(churn_probability, 0.0), 1.0)
+        )
+
+    except requests.exceptions.ConnectionError:
+        st.error(
+            "Cannot connect to FastAPI. "
+            "Make sure the API is running on port 8000."
+        )
+
+    except requests.exceptions.Timeout:
+        st.error(
+            "The API request timed out. Please try again."
+        )
+
+    except requests.exceptions.HTTPError as error:
+        st.error(f"FastAPI returned an HTTP error: {error}")
+
+        st.code(
+            response.text,
+            language="json"
+        )
+
+    except (KeyError, ValueError, TypeError) as error:
+        st.error(
+            f"Unexpected API response: {error}"
+        )
 
     except Exception as error:
-        st.error(f"Prediction failed: {error}")
+        st.error(
+            f"Prediction failed: {error}"
+        )
+
 
 # =====================================
 # Bulk Customer Prediction from CSV
+# NOTE: This section still predicts locally.
 # =====================================
 
 st.divider()
@@ -223,17 +334,27 @@ uploaded_file = st.file_uploader(
 )
 
 if uploaded_file is not None:
+
     try:
-        customers_df = pd.read_csv(uploaded_file)
+        customers_df = pd.read_csv(
+            uploaded_file
+        )
 
         st.subheader("Uploaded Customers")
-        st.dataframe(customers_df.head())
+
+        st.dataframe(
+            customers_df.head()
+        )
 
         if st.button("Rank Customers by Risk"):
 
-            results = rank_customers(customers_df)
+            results = rank_customers(
+                customers_df
+            )
 
-            st.subheader("Ranked Customer Risk List")
+            st.subheader(
+                "Ranked Customer Risk List"
+            )
 
             st.dataframe(
                 results,
@@ -252,4 +373,6 @@ if uploaded_file is not None:
             )
 
     except Exception as error:
-        st.error(f"CSV prediction failed: {error}")
+        st.error(
+            f"CSV prediction failed: {error}"
+        )

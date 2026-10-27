@@ -1,10 +1,10 @@
 
 from typing import List
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import pandas as pd
 
-from src.predict import predict_customer
+from src.predict import predict_customer, rank_customers
 
 app = FastAPI(title="Customer Churn API")
 
@@ -48,3 +48,39 @@ def predict(customers: List[Customer]):
     )
 
     return results_df.to_dict(orient="records")
+
+
+@app.post("/predict/bulk")
+def predict_bulk(customers: List[Customer]):
+    try:
+        if not customers:
+            raise HTTPException(
+                status_code=400,
+                detail="The customer list is empty."
+            )
+
+        customers_data = [
+            customer.model_dump()
+            for customer in customers
+        ]
+
+        customers_df = pd.DataFrame(customers_data)
+
+        results = rank_customers(customers_df)
+
+        # Replace missing values with JSON-compatible nulls
+        results = results.astype(object).where(
+            pd.notna(results),
+            None
+        )
+
+        return results.to_dict(orient="records")
+
+    except HTTPException:
+        raise
+
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )
