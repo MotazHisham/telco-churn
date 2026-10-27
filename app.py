@@ -3,12 +3,21 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import requests
+import os
 
 from src.predict import load_model, rank_customers
 
 
-# FastAPI endpoint
-API_URL = "http://127.0.0.1:8000/predict"
+# FastAPI endpoints
+API_URL = os.getenv(
+    "API_URL",
+    "http://127.0.0.1:8000/predict"
+)
+
+BULK_API_URL = os.getenv(
+    "BULK_API_URL",
+    "http://127.0.0.1:8000/predict/bulk"
+)
 
 
 st.set_page_config(
