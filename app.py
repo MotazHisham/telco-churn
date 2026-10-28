@@ -54,7 +54,7 @@ with st.form("customer_form"):
         )
 
         tenure = st.number_input(
-            "Tenure (months)", 0, 72, 12
+            "Tenure (months)", 0, 100, 12
         )
 
         phone = st.selectbox(
