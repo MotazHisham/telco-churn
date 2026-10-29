@@ -357,9 +357,15 @@ if uploaded_file is not None:
 
         if st.button("Rank Customers by Risk"):
 
-            results = rank_customers(
-                customers_df
+            response = requests.post(
+                BULK_API_URL,
+                json=customers_df.to_dict(orient="records"),
+                timeout=120
             )
+
+            response.raise_for_status()
+
+            results = pd.DataFrame(response.json())
 
             st.subheader(
                 "Ranked Customer Risk List"
