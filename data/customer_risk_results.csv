@@ -8,6 +8,6 @@ Female,1,No,No,36,Yes,Yes,Fiber optic,Yes,No,Yes,No,Yes,No,One year,Yes,Electron
 Female,0,Yes,No,48,Yes,No,Fiber optic,Yes,Yes,Yes,Yes,Yes,Yes,Two year,Yes,Bank transfer (automatic),88.0,4224.0,0.17611179336089308,1,Other
 Male,0,No,Yes,18,Yes,Yes,DSL,No,Yes,Yes,Yes,No,No,One year,No,Credit card (automatic),64.8,1166.4,0.12210790061476653,1,Other
 Female,0,No,No,24,Yes,Yes,DSL,Yes,Yes,No,Yes,No,No,One year,No,Mailed check,60.0,1440.0,0.11892877486102663,0,Other
-Female,0,Yes,Yes,30,Yes,Yes,DSL,Yes,No,Yes,Yes,Yes,No,One year,No,Mailed check,69.4,2082.0,0.1025974411074191,0,Other
-Female,0,Yes,Yes,60,Yes,Yes,DSL,Yes,Yes,Yes,Yes,Yes,Yes,Two year,No,Bank transfer (automatic),78.5,4710.0,0.0278489524852878,0,Other
-Male,0,Yes,Yes,72,Yes,Yes,DSL,Yes,Yes,Yes,Yes,No,No,Two year,No,Bank transfer (automatic),55.2,3974.4,0.008143898836624072,0,Other
+Female,0,Yes,Yes,30,Yes,Yes,DSL,Yes,No,Yes,Yes,Yes,No,One year,No,Mailed check,69.4,2082.0,0.10259744110741906,0,Other
+Female,0,Yes,Yes,60,Yes,Yes,DSL,Yes,Yes,Yes,Yes,Yes,Yes,Two year,No,Bank transfer (automatic),78.5,4710.0,0.02784895248528781,0,Other
+Male,0,Yes,Yes,72,Yes,Yes,DSL,Yes,Yes,Yes,Yes,No,No,Two year,No,Bank transfer (automatic),55.2,3974.4,0.008143898836624065,0,Other
